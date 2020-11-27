@@ -1,7 +1,12 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\Category;
+use backend\models\Product;
+use backend\models\Tag;
+use common\models\User;
 use Yii;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -60,7 +65,36 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $mainSections = [
+            'users' => [
+                'label' => 'Пользователи',
+                'class' => 'bg-aqua',
+                'count' => User::find()->count(),
+                'url' => Url::to(['user/index'])
+            ],
+            'products' => [
+                'label' => 'Товары',
+                'class' => 'bg-green',
+                'count' => Product::find()->count(),
+                'url' => Url::to(['product/index'])
+            ],
+            'categories' => [
+                'label' => 'Категории',
+                'class' => 'bg-yellow',
+                'count' => Category::find()->count(),
+                'url' => Url::to(['category/index'])
+            ],
+            'tags' => [
+                'label' => 'Теги',
+                'class' => 'bg-red',
+                'count' => Tag::find()->count(),
+                'url' => Url::to(['tag/index'])
+            ]
+        ];
+
+        return $this->render('index', [
+            'mainSections' => $mainSections
+        ]);
     }
 
     /**
@@ -74,7 +108,7 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        $this->layout = 'blank';
+        $this->layout = 'main-login';
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
