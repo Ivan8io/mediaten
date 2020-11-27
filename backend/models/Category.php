@@ -18,6 +18,7 @@ use yii\helpers\ArrayHelper;
 class Category extends \yii\db\ActiveRecord
 {
     use NamesList;
+
     /**
      * {@inheritdoc}
      */
