@@ -32,6 +32,23 @@ class Product extends \yii\db\ActiveRecord
     }
 
     /**
+     * Why this doesn't work???
+     *
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            Yii::$app->session->setFlash('success', 'Товар добавлен!');
+        }
+
+        Yii::$app->session->setFlash('info', 'Товар обновлен!');
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function rules()

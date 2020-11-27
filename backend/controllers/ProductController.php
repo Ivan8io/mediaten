@@ -8,7 +8,6 @@ use backend\models\Tag;
 use Yii;
 use backend\models\Product;
 use backend\models\ProductSearch;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -18,6 +17,8 @@ use yii\filters\VerbFilter;
  */
 class ProductController extends Controller
 {
+    public const ACTION_UPDATE = true;
+
     /**
      * {@inheritdoc}
      */
@@ -70,14 +71,7 @@ class ProductController extends Controller
     {
         $model = new Product();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-
-            if ($tags = Yii::$app->request->post('Product')['tags']) {
-                $this->addTagsToProduct($tags, $model->id);
-            }
-
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+        $this->save($model);
 
         $categoryNamesList = Category::getNamesList();
         $tagNamesList = Tag::getNamesList();
@@ -100,9 +94,7 @@ class ProductController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+        $this->save($model, static::ACTION_UPDATE);
 
         $categoryNamesList = Category::getNamesList();
         $tagNamesList = Tag::getNamesList();
@@ -148,18 +140,42 @@ class ProductController extends Controller
      * Fill product_tag table when creating product
      *
      * @param array $tags
-     * @param int $id
-     *
+     * @param int $productId
      * @return void
      */
-    protected function addTagsToProduct(array $tags, int $id)
+    protected function addTagsToProduct(array $tags, int $productId) : void
     {
-        foreach ($tags as $tag) {
+        foreach ($tags as $tagId) {
             $productTag = new ProductTag();
-            $productTag->product_id = $id;
-            $productTag->tag_id = $tag;
+            $productTag->product_id = $productId;
+            $productTag->tag_id = $tagId;
             $productTag->save();
         }
     }
 
+    /**
+     * Create or Update product
+     *
+     * @param Product $model
+     * @param string|null $actionUpdate
+     * @return void|\yii\web\Response
+     */
+    protected function save(Product $model, string $actionUpdate = null)
+    {
+        $validModel = $model->load(Yii::$app->request->post()) && $model->save();
+
+        if (!$validModel) {
+            return;
+        }
+
+        if ($actionUpdate) {
+            ProductTag::deleteAll(['product_id' => $model->id]);
+        }
+
+        if ($tags = Yii::$app->request->post('Product')['tags']) {
+            $this->addTagsToProduct($tags, $model->id);
+        }
+
+        return $this->redirect(['view', 'id' => $model->id]);
+    }
 }
