@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model common\models\User */
 /* @var $updateForm bool */
 
-$this->title = 'Обновить пользователя: ' . $model->id;
+$this->title = 'Обновить пользователя: ' . $model->username;
 $this->params['breadcrumbs'][] = ['label' => 'Пользователи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Обновить';
