@@ -12,7 +12,6 @@ use backend\models\Product;
 class ProductSearch extends Product
 {
     public $category;
-    public $tagname;
 
     /**
      * {@inheritdoc}
@@ -21,7 +20,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'category_id', 'price'], 'integer'],
-            [['name', 'slug', 'description', 'category', 'tagname'], 'safe'],
+            [['name', 'slug', 'description', 'category'], 'safe'],
         ];
     }
 
@@ -76,9 +75,9 @@ class ProductSearch extends Product
             'price' => $this->price,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'slug', $this->slug])
-            ->andFilterWhere(['like', 'description', $this->description])
+        $query->andFilterWhere(['like', 'product.name', $this->name])
+            ->andFilterWhere(['like', 'product.slug', $this->slug])
+            ->andFilterWhere(['like', 'product.description', $this->description])
             ->andFilterWhere(['like', 'category.name', $this->category]);
 
         return $dataProvider;
