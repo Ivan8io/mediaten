@@ -50,18 +50,6 @@ class Category extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets all names of categories
-     *
-     * @return array
-     */
-    public static function getNamesList() : array
-    {
-        $namesList = static::find()->select(['id', 'name'])->all();
-
-        return ArrayHelper::map($namesList, 'id', 'name');
-    }
-
-    /**
      * Gets query for [[Products]].
      *
      * @return \yii\db\ActiveQuery
