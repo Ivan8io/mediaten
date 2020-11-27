@@ -7,6 +7,7 @@ use yii\widgets\ActiveForm;
 /* @var $model \frontend\models\SignupForm */
 /* @var $form yii\widgets\ActiveForm */
 /* @var $updateForm bool */
+
 ?>
 
 <div class="user-form">
@@ -22,7 +23,6 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'password')->passwordInput() ?>
 
     <?php endif; ?>
-
 
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>

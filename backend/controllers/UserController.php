@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use frontend\models\SignupForm;
 use Yii;
 use common\models\User;
 use common\models\UserSearch;
@@ -14,6 +15,8 @@ use yii\filters\VerbFilter;
  */
 class UserController extends Controller
 {
+    public const ACTION_UPDATE = true;
+
     /**
      * {@inheritdoc}
      */
@@ -64,10 +67,10 @@ class UserController extends Controller
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new SignupForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -92,6 +95,7 @@ class UserController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'updateForm' => static::ACTION_UPDATE
         ]);
     }
 
@@ -104,7 +108,13 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $deleteUser = $this->findModel($id);
+
+        if ($deleteUser->id === Yii::$app->user->id) {
+            return $this->redirect(['index']);
+        }
+
+        $deleteUser->delete();
 
         return $this->redirect(['index']);
     }
@@ -122,6 +132,6 @@ class UserController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('Запрашиваемая страница не существует.');
     }
 }
