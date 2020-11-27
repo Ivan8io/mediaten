@@ -3,8 +3,6 @@
 namespace backend\models;
 
 use backend\traits\NamesList;
-use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "category".
